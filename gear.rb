@@ -1,9 +1,10 @@
 class Gear
   attr_reader :chainring, :cog, :wheel
-  def initialize(chainring, cog, wheel=nil)
-    @chainring = chainring
-    @cog = cog
-    @wheel = wheel
+  def initialize(args)
+    args = defaults.merge(args)
+    @chainring = args.fetch(:chainring, 40)
+    @cog = args.fetch(:cog, 18)
+    @wheel = args[:wheel]
   end
 
   def ratio
@@ -14,12 +15,18 @@ class Gear
     ratio * wheel.diamiter
   end
 
-  # Wheel = Struct.new(:rim, :tire) do
-  #   def diamiter
-  #     rim + (tire * 2)
-  #   end
+  def defaults
+    { chainring: 40, cog: 18 }
+  end
+
+  # def Wheel
+  #   @wheel || Wheel.new(rim, tire)
   # end
 end
+
+Gear.new(chainring: 32, cog: 11, wheel: Wheel.new(26,3))
+
+
 
 class Wheel
   attr_reader :rim, :tire
@@ -36,7 +43,6 @@ class Wheel
   def circumference
     diamiter * Math::PI
   end
-
 end
 
 wheel = Wheel.new(25, 1.5)
