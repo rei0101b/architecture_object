@@ -178,12 +178,43 @@ class Parts extend Forwardable
 end
 
 
-class Part
-  attr_reader :name, :description, :needs_spare
+# class Part
+#   attr_reader :name, :description, :needs_spare
 
-  def initialize(args)
-    @name = args[:name]
-    @description = args[:description]
-    @needs_spare = args.fetch(:needs_spare, true)
+#   def initialize(args)
+#     @name = args[:name]
+#     @description = args[:description]
+#     @needs_spare = args.fetch(:needs_spare, true)
+#   end
+# end
+
+require 'ostruct'
+module PartsFactort
+  def self.build(config, parts_class = Parts)
+    parts_class.new(
+      config.collect do |part_config|
+        create_part(part_config)
+      end
+    )
+  end
+
+  def self.create_part(part_config)
+    OpenStruct.new(
+      name: part_config[0],
+      description: part_config[1],
+      needs_spare: part_config.fetch(2, true)
+    )
   end
 end
+
+road_config = [
+  ['chain', '10-speed'],
+  ['tire_size', '23'],
+  ['tape_color', 'red'
+  ]
+]
+
+road_bike = Bicycle.new(
+  size: 'L',
+  parts: PartsFactort.build(road_config)
+)
